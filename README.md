@@ -1,19 +1,16 @@
 
-# ToDo Pyramid Application - Todo-Piranha
+# Todo-Piranha
 
-This is a simple TODO application built with Pyramid.
+This is a simple Todo Pyramind application.
 
 We will have 2 versions one using Forms and Views and an other one built with
 ReactJS:
 
-    - todo-piranha-form: Forms / Views Todo App
-    - todo-piranha-react: ReactJs Todo App
+* todo-piranha-form: Forms / Views Todo App
+* todo-piranha-react: ReactJs Todo App
 
 Todo-Piranha try to be minimilastic for new pyramid comers to learn about
 Pyramid.
-
-If you want to contribute to this project, please feel free to fork away and
-send pull request.
 
 The following packages will be used in todo-piranha-form:
 
@@ -33,7 +30,7 @@ The following packages will be used in todo-piranha-react:
 * Colander
 * Cornice
 
-## Install
+## Install with Python 2.7
 
 You can follow the instructions in the [Pyramid docs on installation][install].
 
@@ -47,7 +44,9 @@ Once you have Python and virtualenv installed, you can do the following:
     $ source bin/activate
 ```
 
-If you prefer to go ahead with Python3 you can do the following:
+## Install with Python 3.4
+
+Once you have Python3.4 installed, you can do the following:
 
 ```
     $ cd todo-piranha
@@ -69,19 +68,21 @@ Install Pyramid and [Sphinx][sphinx-doc] (Documentation):
     $ $VENV/bin/pip3.4 install sphinx
 ```
 
+## Install requirements and Init the DB
+
 This creates the new virtual environment, now you can install the app.
 
 ```
     (todo-piranha)$ cd project_directory
     (todo-piranha)$ git clone https://github.com/areski/todo-piranha.git
-    (todo-piranha)$ cd todo-piranha
+    (todo-piranha)$ cd todo-piranha/todopiranhaform
     (todo-piranha)$ pip install -r requirements.txt -e .
 ```
 
 This gives us the end result of the finished app. If it is the first time you are running the app, you will need to initialize the database.
 
 ```
-    (todo-piranha)$ initialize_todo-piranha_db development.ini
+    (todo-piranha)$ initialize_todo-piranha-form_db development.ini
 ```
 
 It can now be started up by doing the following.
@@ -91,6 +92,12 @@ It can now be started up by doing the following.
 ```
 
 Now go to <http://localhost:6543> and enjoy!
+
+## Contribute
+
+If you want to contribute to this project, please feel free to fork away and
+send pull request.
+
 
 
 [install]: http://pyramid.readthedocs.org/en/latest/narr/install.html

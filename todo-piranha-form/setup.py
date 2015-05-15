@@ -17,6 +17,9 @@ requires = [
     'transaction',
     'zope.sqlalchemy',
     'waitress',
+    'deform_bootstrap==0.2.8',
+    'deform_bootstrap_extra',
+    'pyramid_jinja2'
     ]
 
 setup(name='todo-piranha-form',
