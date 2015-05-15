@@ -30,6 +30,8 @@ The following packages will be used in todo-piranha-react:
 * Colander
 * Cornice
 
+WTForms-Alchemy ???
+
 ## Install with Python 2.7
 
 You can follow the instructions in the [Pyramid docs on installation][install].

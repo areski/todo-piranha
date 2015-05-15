@@ -26,16 +26,8 @@ Value: {{ val }}
 <hr/>
 
 
-<form method="POST" action="/viewform">
-  Name: {{form.text("name", size=40)}}
-  <br/>
-  Age: {{form.text("age", size=40)}}
-  <br/>
-  <input type="submit" value="Submit" />
-</form>
 
-
-{{ form }}
+{{ form|e }}
 
 </body>
 </html>
