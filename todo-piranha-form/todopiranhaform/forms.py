@@ -1,5 +1,5 @@
 from deform import Form
-from .schemas import myform_schema
+from .schemas import task_schema
 
 
-myform = Form(myform_schema, buttons=('submit',))
+task_form = Form(task_schema, buttons=('submit',))

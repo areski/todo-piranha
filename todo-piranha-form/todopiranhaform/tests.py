@@ -40,7 +40,7 @@ class TestMyViewFailureCondition(unittest.TestCase):
         engine = create_engine('sqlite://')
         from .models import (
             Base,
-            MyModel,
+            TaskModel,
             )
         DBSession.configure(bind=engine)
 

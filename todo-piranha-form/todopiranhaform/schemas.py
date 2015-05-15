@@ -1,9 +1,9 @@
 import colander
 
 
-class Myform(colander.MappingSchema):
-    name = colander.SchemaNode(colander.String())
-    age = colander.SchemaNode(colander.Integer(),
-                              validator=colander.Range(0, 200))
+class TaskSchema(colander.MappingSchema):
+    taskname = colander.SchemaNode(colander.String(),
+                                  validator=colander.OneOf(['task', 'work']))
+    status = colander.SchemaNode(colander.Boolean())
 
-myform_schema = Myform()
+task_schema = TaskSchema()

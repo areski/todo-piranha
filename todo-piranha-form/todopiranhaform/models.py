@@ -2,6 +2,7 @@ from sqlalchemy import (
     Column,
     Index,
     Integer,
+    Boolean,
     Text,
     )
 
@@ -18,10 +19,10 @@ DBSession = scoped_session(sessionmaker(extension=ZopeTransactionExtension()))
 Base = declarative_base()
 
 
-class MyModel(Base):
-    __tablename__ = 'models'
+class TaskModel(Base):
+    __tablename__ = 'tasks'
     id = Column(Integer, primary_key=True)
-    name = Column(Text)
-    value = Column(Integer)
+    taskname = Column(Text)
+    status = Column(Boolean)
 
-Index('my_index', MyModel.name, unique=True, mysql_length=255)
+Index('task_index', TaskModel.taskname, unique=True, mysql_length=255)

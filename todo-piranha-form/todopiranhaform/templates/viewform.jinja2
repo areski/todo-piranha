@@ -20,14 +20,10 @@
    deform.load()
 </script>
 
+Appstruct: {{ appstruct }} <hr/>
 
-Value: {{ val }}
-
-<hr/>
-
-
-
-{{ form|e }}
+Form:
+{{ form|safe }}
 
 </body>
 </html>
