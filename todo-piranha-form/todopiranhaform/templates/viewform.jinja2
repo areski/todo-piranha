@@ -1,0 +1,41 @@
+<html>
+<head>
+  <title>
+    Deform Demo Site
+  </title>
+  <!-- Meta Tags -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="/static/css/form.css" type="text/css" />
+  <!-- JavaScript -->
+  <script type="text/javascript"
+          src="/static/scripts/jquery-1.4.2.min.js"></script>
+  <script type="text/javascript"
+          src="/static/scripts/deform.js"></script>
+
+</head>
+<body>
+
+<script type="text/javascript">
+   deform.load()
+</script>
+
+
+Value: {{ val }}
+
+<hr/>
+
+
+<form method="POST" action="/viewform">
+  Name: {{form.text("name", size=40)}}
+  <br/>
+  Age: {{form.text("age", size=40)}}
+  <br/>
+  <input type="submit" value="Submit" />
+</form>
+
+
+{{ form }}
+
+</body>
+</html>
