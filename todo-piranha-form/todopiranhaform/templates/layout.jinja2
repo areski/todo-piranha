@@ -17,24 +17,42 @@
     {% block navbar %}
     <div id="navbar">
         <ul id="filters">
+        {% if not request.authenticated_userid %}
             <li>
                 <a href="/login" class="selected">Login</a>
             </li>
+        {% else %}
             <li>
-                <a href="/logout">Logout</a>
+                <a href="/logout" class="selected">Logout</a>
             </li>
+        {% endif %}
         </ul>
     </div>
     {% endblock %}
+
+    {% if request.session.peek_flash('success') %}
+    <div id="flash-messages-success">
+        {{ request.session.pop_flash('success')[0]|title }}
+    </div>
+    {% endif %}
+
+    {% if request.session.peek_flash('error') %}
+    <div id="flash-messages-error">
+        {{ request.session.pop_flash('error')[0]|title }}
+    </div>
+    {% endif %}
 
     {% block todocontent %}
     {% endblock %}
 
     <footer id="info">
+    {% if request.authenticated_userid %}
         <p>Double-click to edit a todo</p>
+    {% endif %}
+
         <p>Created by <a href="http://twitter.com/areskib">Areski Belaid</a></p>
         <p>Code on Github <a href="https://github.com/areski/todo-piranha">Todo-Piranha</a></p>
-        <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+        <p>Not part of <a href="http://todomvc.com">TodoMVC</a></p>
     </footer>
 </body>
 </html>

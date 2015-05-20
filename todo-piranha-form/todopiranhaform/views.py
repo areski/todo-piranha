@@ -2,6 +2,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.view import forbidden_view_config
 from pyramid.security import authenticated_userid
+from pyramid.session import check_csrf_token
 from pyramid.security import remember
 from pyramid.security import forget
 from .forms import task_form
@@ -43,7 +44,8 @@ def testjson(request):
     return {'val': 1}
 
 
-@view_config(route_name='viewtodo', renderer='templates/todo.jinja2')
+@view_config(route_name='viewtodo', renderer='templates/todo.jinja2',
+             permission='view')
 def viewtodo(request):
     return {'val': 1}
 
@@ -70,31 +72,32 @@ def viewform(request):
         }
 
 
-@view_config(renderer="templates/login.pt", context=HTTPForbidden)
+@view_config(renderer="templates/login.jinja2", context=HTTPForbidden)
 @view_config(route_name='login', renderer='templates/login.jinja2')
 def login(request):
-    request = request
     # login_url = request.resource_url(self.context, 'login')
     login_url = request.route_url('login')
     referrer = request.url
     if referrer == login_url:
         # never use the login form itself as came_from
-        referrer = '/'
+        referrer = '/todo'
     came_from = request.params.get('came_from', referrer)
-    message = 'default'
+    message = ''
     login = ''
     password = ''
     if 'form.submitted' in request.params:
+        # Require CSRF Token
+        check_csrf_token(request)
         login = request.params['login']
         password = request.params['password']
         if USERS.get(login) == password:
             headers = remember(request, login)
             print("AUTHENTICATED!!!")
-            request.session.flash('Logged in successfully')
+            request.session.flash('Logged in successfully', 'success')
             return HTTPFound(location=came_from,
                              headers=headers)
         message = 'Failed login'
-    request.session.flash(message)
+    request.session.flash(message, 'error')
 
     return dict(
         page_title="Login",
@@ -106,19 +109,13 @@ def login(request):
         )
 
 
-@view_config(route_name='logout', check_csrf=True)
-def logout(self):
-    """This is an override of the logout view that comes from the
-    persona plugin. The only change here is that the user is always
-    re-directed back to the home page when logging out. This is so
-    that they don't see a `forbidden` page right after logging out.
-    """
-    headers = forget(self.request)
-    # Send the user back home, everything else is protected
-    # return HTTPFound('/', headers=headers)
-    # url = self.request.resource_url(self.context, 'login.html')
-    url = self.request.route_url('login')
-    return HTTPFound(location=url, headers=headers)
+@view_config(route_name='logout')
+def logout(request):
+    headers = forget(request)
+    url = request.route_url('login')
+    # url = request.resource_url(request.context)
+    return HTTPFound(location=url,
+                     headers=headers)
 
 
 # @forbidden_view_config(renderer='templates/login.jinja2')

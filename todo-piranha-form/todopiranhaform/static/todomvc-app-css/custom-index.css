@@ -38,3 +38,19 @@
     text-align: center;
     border-top: 1px solid #e6e6e6;
 }
+
+#flash-messages-success {
+  margin: 5px auto 0;
+  color: #74B477;
+  font-size: 20px;
+  text-shadow: 0 1px 0 rgba(200, 255, 200, 0.5);
+  text-align: center;
+}
+
+#flash-messages-error {
+  margin: 5px auto 0;
+  color: #C95F5F;
+  font-size: 20px;
+  text-shadow: 0 1px 0 rgba(200, 255, 200, 0.5);
+  text-align: center;
+}
