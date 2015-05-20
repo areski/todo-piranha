@@ -2,6 +2,7 @@ from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
+from pyramid.session import UnencryptedCookieSessionFactoryConfig
 from .usersdb import groupfinder
 
 
@@ -17,6 +18,7 @@ def main(global_config, **settings):
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
+    my_session_factory = UnencryptedCookieSessionFactoryConfig('itsaseekreet')
     # TODO: move mysecret to conf file
     authn_policy = AuthTktAuthenticationPolicy(
         'mysecret', callback=groupfinder, hashalg='sha512')
@@ -25,6 +27,7 @@ def main(global_config, **settings):
     config = Configurator(
         settings=settings,
         root_factory='todopiranhaform.rootfactory.RootFactory',
+        session_factory=my_session_factory,
     )
     config.set_authentication_policy(authn_policy)
     config.set_authorization_policy(authz_policy)

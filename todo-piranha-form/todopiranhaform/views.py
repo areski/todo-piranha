@@ -81,7 +81,7 @@ def login(request):
         # never use the login form itself as came_from
         referrer = '/'
     came_from = request.params.get('came_from', referrer)
-    message = ''
+    message = 'default'
     login = ''
     password = ''
     if 'form.submitted' in request.params:
@@ -89,9 +89,12 @@ def login(request):
         password = request.params['password']
         if USERS.get(login) == password:
             headers = remember(request, login)
+            print("AUTHENTICATED!!!")
+            request.session.flash('Logged in successfully')
             return HTTPFound(location=came_from,
                              headers=headers)
         message = 'Failed login'
+    request.session.flash(message)
 
     return dict(
         page_title="Login",

@@ -4,14 +4,15 @@
 
     <section id="todoapp">
         <header id="header">
-            <h1>todos</h1>
+            <h1>Todos</h1>
         </header>
 
         <div id="formlogin">
+            <p>Please enter your username and password (demo / demo) <br/></p>
             <form action="/login">
                 <input type="hidden" name="came_from" value="{{ came_from }}"/>
-                <input id="login" class="edit login" placeholder="Enter your username" autofocus>
-                <input id="password" class="edit login" placeholder="Enter your password" type="password">
+                <input name="login" class="edit login" placeholder="Enter your username" autofocus>
+                <input type="password" name="password" class="edit login" placeholder="Enter your password">
 
                 <input type="submit" name="form.submitted" value="Log In" class="btn"/>
             </form>

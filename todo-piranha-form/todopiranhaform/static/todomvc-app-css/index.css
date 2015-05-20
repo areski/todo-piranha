@@ -104,14 +104,6 @@ input[type="checkbox"] {
 	font-smoothing: antialiased;
 }
 
-.login {
-	margin-bottom: 11px;
-	border: 1px solid #999;
-
-	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2),
-	            0 25px 50px 0 rgba(0, 0, 0, 0.1);
-}
-
 #new-todo {
 	padding: 16px 16px 16px 60px;
 	border: none;
@@ -252,38 +244,6 @@ label[for='toggle-all'] {
 
 #todo-list li.editing:last-child {
 	margin-bottom: -1px;
-}
-
-#navbar {
-	color: #777;
-	padding: 10px 15px;
-	height: 20px;
-	text-align: right;
-	border-top: 1px solid #e6e6e6;
-}
-
-.btn {
-  -webkit-border-radius: 14;
-  -moz-border-radius: 14;
-  border-radius: 14px;
-  font-family: Arial;
-  color: #ffffff;
-  font-size: 20px;
-  background: #E39595;
-  padding: 10px 20px 10px 20px;
-  text-decoration: none;
-}
-
-.btn:hover {
-  background: #C8C8C8;
-  text-decoration: none;
-}
-
-#formlogin {
-	color: #777;
-	padding: 10px 15px;
-	text-align: center;
-	border-top: 1px solid #e6e6e6;
 }
 
 #footer {
