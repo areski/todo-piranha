@@ -21,6 +21,7 @@ def main(global_config, **settings):
     config.add_static_view('deform_static', 'deform:static')
     config.add_route('home', '/')
     config.add_route('viewform', '/viewform')
+    config.add_route('viewtodo', '/todo')
     config.add_route('testjson', '/testjson')
     config.scan()
     return config.make_wsgi_app()

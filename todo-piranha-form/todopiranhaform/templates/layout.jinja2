@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="${request.locale_name}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pyramid web application">
+    <link rel="shortcut icon" href="{{ request.static_url('todopiranhaform:static/favicon-16x16.png') }}">
+
+    <title>Pyramid • TodoMVC</title>
+    <link rel="stylesheet" href="{{ request.static_url('todopiranhaform:static/todomvc-common/base.css') }}">
+    <link rel="stylesheet" href="{{ request.static_url('todopiranhaform:static/todomvc-app-css/index.css') }}">
+</head>
+<body>
+
+    {% block todocontent %}
+    {% endblock %}
+
+    <footer id="info">
+        <p>Double-click to edit a todo</p>
+        <p>Created by <a href="http://twitter.com/areskib">Areski Belaid</a></p>
+        <p>Code on Github <a href="https://github.com/areski/todo-piranha">Todo-Piranha</a></p>
+        <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+    </footer>
+</body>
+</html>

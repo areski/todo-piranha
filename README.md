@@ -12,7 +12,7 @@ ReactJS:
 Todo-Piranha try to be minimilastic for new pyramid comers to learn about
 Pyramid.
 
-The following packages will be used in todo-piranha-form:
+The following packages will be used:
 
 * Pyramid
 * Deform
@@ -20,17 +20,10 @@ The following packages will be used in todo-piranha-form:
 * Jinja2
 * Colander
 * WebOb
-
-
-The following packages will be used in todo-piranha-react:
-
-* Pyramid
-* SQLalchemy
-* Jinja2
-* Colander
 * Cornice
+* Authentication with Twitter - https://github.com/cd34/apex
+* WTForms-Alchemy
 
-WTForms-Alchemy ???
 
 ## Install with Python 2.7
 

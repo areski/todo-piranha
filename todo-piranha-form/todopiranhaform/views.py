@@ -23,7 +23,7 @@ def succeed():
 @view_config(route_name='home', renderer='templates/mytemplate.pt')
 def my_view(request):
     try:
-        one = DBSession.query(TaskModel).filter(TaskModel.name == 'one').first()
+        one = DBSession.query(TaskModel).filter(TaskModel.taskname == 'one').first()
     except DBAPIError:
         return Response(conn_err_msg, content_type='text/plain', status_int=500)
     return {'one': one, 'project': 'todo-piranha-form'}
@@ -31,6 +31,11 @@ def my_view(request):
 
 @view_config(route_name='testjson', renderer='json')
 def testjson(request):
+    return {'val': 1}
+
+
+@view_config(route_name='viewtodo', renderer='templates/todo.jinja2')
+def viewtodo(request):
     return {'val': 1}
 
 
