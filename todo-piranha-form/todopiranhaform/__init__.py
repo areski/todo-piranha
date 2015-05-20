@@ -1,5 +1,9 @@
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
+from pyramid.authentication import AuthTktAuthenticationPolicy
+from pyramid.authorization import ACLAuthorizationPolicy
+from .usersdb import groupfinder
+
 
 from .models import (
     DBSession,
@@ -13,7 +17,18 @@ def main(global_config, **settings):
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
-    config = Configurator(settings=settings)
+    # TODO: move mysecret to conf file
+    authn_policy = AuthTktAuthenticationPolicy(
+        'mysecret', callback=groupfinder, hashalg='sha512')
+    authz_policy = ACLAuthorizationPolicy()
+
+    config = Configurator(
+        settings=settings,
+        root_factory='todopiranhaform.rootfactory.RootFactory',
+    )
+    config.set_authentication_policy(authn_policy)
+    config.set_authorization_policy(authz_policy)
+
     config.include('pyramid_chameleon')
     config.include('pyramid_jinja2')
 
@@ -22,6 +37,8 @@ def main(global_config, **settings):
     config.add_route('home', '/')
     config.add_route('viewform', '/viewform')
     config.add_route('viewtodo', '/todo')
+    config.add_route('login', '/login')
+    config.add_route('logout', '/logout')
     config.add_route('testjson', '/testjson')
     config.scan()
     return config.make_wsgi_app()

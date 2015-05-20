@@ -13,6 +13,19 @@
 </head>
 <body>
 
+    {% block navbar %}
+    <div id="navbar">
+        <ul id="filters">
+            <li>
+                <a href="/login" class="selected">Login</a>
+            </li>
+            <li>
+                <a href="/logout">Logout</a>
+            </li>
+        </ul>
+    </div>
+    {% endblock %}
+
     {% block todocontent %}
     {% endblock %}
 
