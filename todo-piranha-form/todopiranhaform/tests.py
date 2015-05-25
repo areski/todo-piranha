@@ -26,30 +26,24 @@ class TestMyViewSuccessCondition(unittest.TestCase):
         testing.tearDown()
 
     def test_passing_view(self):
-        from .views import my_view
+        from .views import todo_json
         request = testing.DummyRequest()
-        info = my_view(request)
-        self.assertEqual(info['one'].taskname, 'one')
-        self.assertEqual(info['project'], 'todo-piranha-form')
+        tasklist = todo_json(request)
+        self.assertEqual(tasklist[0]['taskid'], '1')
+        self.assertEqual(tasklist[0]['description'], 'Learn 101 of telekinesis')
 
 
-class TestMyViewFailureCondition(unittest.TestCase):
+class TutorialViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
-        from sqlalchemy import create_engine
-        engine = create_engine('sqlite://')
-        from .models import (
-            Base,
-            TaskModel,
-            )
-        DBSession.configure(bind=engine)
 
     def tearDown(self):
-        DBSession.remove()
         testing.tearDown()
 
-    def test_failing_view(self):
-        from .views import my_view
+    def test_todofiltered(self):
+        from .views import viewtodo
+
         request = testing.DummyRequest()
-        info = my_view(request)
-        self.assertEqual(info.status_int, 500)
+        request.matchdict = {'viewtype': 'COMPLETED'}
+        response = viewtodo(request)
+        self.assertEqual(response.status_code, 200)
