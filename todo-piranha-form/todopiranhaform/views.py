@@ -81,6 +81,12 @@ def count_items_left():
     return count
 
 
+@view_config(route_name='todo_json', renderer='json',
+             permission='view')
+def todo_json(request):
+    return _TASKS['default']
+
+
 @view_config(route_name='todofiltered', renderer='templates/todo.jinja2',
              permission='view')
 def todofiltered(request):
@@ -199,6 +205,12 @@ def logout(request):
     # url = request.resource_url(request.context)
     return HTTPFound(location=url,
                      headers=headers)
+
+
+@view_config(route_name='home')
+def homeview(request):
+    url = request.route_url('viewtodo')
+    return HTTPFound(location=url)
 
 
 # @view_config(route_name='home', renderer='templates/mytemplate.pt')

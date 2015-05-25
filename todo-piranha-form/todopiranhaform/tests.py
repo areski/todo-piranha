@@ -13,12 +13,12 @@ class TestMyViewSuccessCondition(unittest.TestCase):
         engine = create_engine('sqlite://')
         from .models import (
             Base,
-            MyModel,
+            TaskModel,
             )
         DBSession.configure(bind=engine)
         Base.metadata.create_all(engine)
         with transaction.manager:
-            model = MyModel(name='one', value=55)
+            model = TaskModel(taskname='one', status=True)
             DBSession.add(model)
 
     def tearDown(self):
@@ -29,7 +29,7 @@ class TestMyViewSuccessCondition(unittest.TestCase):
         from .views import my_view
         request = testing.DummyRequest()
         info = my_view(request)
-        self.assertEqual(info['one'].name, 'one')
+        self.assertEqual(info['one'].taskname, 'one')
         self.assertEqual(info['project'], 'todo-piranha-form')
 
 
