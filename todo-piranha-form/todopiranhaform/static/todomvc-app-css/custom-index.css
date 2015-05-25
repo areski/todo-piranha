@@ -64,7 +64,7 @@ a {
   display: none;
   position: absolute;
   top: 0;
-  right: 10px;
+  right: 30px;
   bottom: 0;
   width: 40px;
   height: 32px;
@@ -72,5 +72,50 @@ a {
   font-size: 30px;
   color: #cc9a9a;
   margin-bottom: 11px;
-  transition: color 0.2s ease-out;
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%); /* For Webkit browsers */
+  filter: gray; /* For IE 6 - 9 */
+  -webkit-transition: all .6s ease; /* Fade to color for Chrome and Safari */
+  filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
+}
+
+#todo-list li .destroy:hover {
+  filter: grayscale(0%);
+  -webkit-filter: grayscale(0%);
+  filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 1 0\'/></filter></svg>#grayscale");
+}
+
+#todo-list li .complete {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0px;
+  bottom: 0;
+  width: 40px;
+  height: 28px;
+  margin: auto 0;
+  font-size: 30px;
+  color: #cc9a9a;
+  margin-bottom: 11px;
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%); /* For Webkit browsers */
+  filter: gray; /* For IE 6 - 9 */
+  -webkit-transition: all .6s ease; /* Fade to color for Chrome and Safari */
+  filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
+
+}
+
+#todo-list li .complete:hover {
+  color: #af5b5e;
+  filter: grayscale(0%);
+  -webkit-filter: grayscale(0%);
+  filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 1 0\'/></filter></svg>#grayscale");
+}
+
+#todo-list li .complete:after {
+  content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wUZDxAnLtlzOAAAA1BJREFUSMellk9oXFUUxn/n3peZOpk203YK4kIEU0ojiVnYrFwFdKm1q6yEIIgIdaMMGSgVJJAhm1Bc22YjZKVR3LiJuBBEZ5FMNRIbFKuBgmMmaeZPMjPvHhd9b3jzOi82eDfv3PPu/c79vnvuuVc4plWKpYvADDANjAH54FcV2ATWgJWJhbl7SRiSADwq1iwCr6nvjFjTG6e+U7FGwi/gq+++FGsK4/OF7TiWiTvu3licBdaBNwDLfzcLXAXWg7nJDCrF0g3gI/5fuzmxMDf/WIBKsTQr1nwCROkTtRMkYoD91vh84U4vQKVYGgXWxZrhhAknDdAEJsfnC9teMG8RyKjvFCD34mVS589qhLYCHGz9RmvnAeG48DvAzgSY16RSLF0Ua34Js8WkUlx6/2016ZREwAWg22hy79Zt7dYbItYexyDMrsueWDMTZIICZEefw6RTA3fPG84w+u6bNP74C5tO9/w7X3yN3zoclF0znvpuOgQPogPQru3rw5+3+iSKStY9qPf87WoNdb7aTCYu17Qn1ozFMwfQv7/9Xjr7B2Sff1Zj6Rz2e/5nXn9FAal+V6Zbb0blGvPUd/kogxClVt7QSx+8w1DuzEAGcWZ+61Dvf7qKSafwTmdDf94LJOlj0Li/o0MjZyQCfiwDQPc2NsV1OvhHbVXnZGjk0VwTFK6+VvthnXNXJk90fGvlSs/2my3au3sAVRNUxcj6lFr5LmdfGn9i8G6jyf5PW30+d3REu7q7adR3a9GD0/j9Tz319AW87LDGtNYB2iuge+ubuHZH1ekjHKeqTtV1Ot8YYEWscQBijXQe1iX/8pWwjEikZsX7PX/txw3EiIgRAUJbgRUJSvRn6rur4SbnJl9QgsFPsskPvlpTdb6Eqw8CfT61vHTNC6QpAK8GNYRaeYOjak1du5N40Ab4o3YTKPQunImFuW3guliDWCOIIX3hvNinTkUp90kQ9cdt4PrU8tJ23402sTB3B7gZrkSsIXUuh5fNnCRbVYx8OLW8dDvxTq4US7PAx0APuVtv0D2oo04TkcVIE3gvCj7wTg6YTIo1q2F2DY2clqHcSJJEKkZWgck4eOKrIv5sEWumgTG/dZhv7+6B6j/RZ8vU8tKvSRj/AvoBylyOPgSMAAAAAElFTkSuQmCC);
+}
+
+#todo-list li:hover .complete {
+  display: block;
 }

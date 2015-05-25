@@ -43,6 +43,7 @@ def main(global_config, **settings):
     config.add_route('viewtodo', '/todo')
     config.add_route('clear_completed', '/clear_completed')
     config.add_route('task_delete', '/task_delete/{taskid}')
+    config.add_route('task_complete', '/task_complete/{taskid}')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
     config.add_route('testjson', '/testjson')

@@ -55,9 +55,18 @@ _TASKS['default'] = [
 ]
 
 
-def complete_task_only():
+def get_complete_task():
     # filter list
-    _TASKS['default'] = [task for task in _TASKS['default'] if task['status'] == 'ACTIVE']
+    return [task for task in _TASKS['default'] if task['status'] == 'ACTIVE']
+
+
+def complete_task(taskid):
+    ntasklist = []
+    for task in _TASKS['default']:
+        if task['taskid'] == taskid:
+            task['status'] = "COMPLETED"
+        ntasklist.append(task)
+    return ntasklist
 
 
 def delete_task(taskid):
@@ -159,7 +168,7 @@ def viewtodo(request, viewtype='ALL'):
 
 @view_config(route_name='clear_completed')
 def clear_completed(request):
-    complete_task_only()
+    _TASKS['default'] = get_complete_task()
     url = request.route_url('viewtodo')
     return HTTPFound(location=url)
 
@@ -170,6 +179,16 @@ def task_delete(request):
         taskid = request.matchdict['taskid']
         delete_task(taskid)
         request.session.flash("Task deleted!", 'error')
+    url = request.route_url('viewtodo')
+    return HTTPFound(location=url)
+
+
+@view_config(route_name='task_complete')
+def task_complete(request):
+    if request.matchdict['taskid']:
+        taskid = request.matchdict['taskid']
+        complete_task(taskid)
+        request.session.flash("Task completed!", 'success')
     url = request.route_url('viewtodo')
     return HTTPFound(location=url)
 
@@ -194,7 +213,6 @@ def login(request):
         password = request.params['password']
         if USERS.get(login) == password:
             headers = remember(request, login)
-            print("AUTHENTICATED!!!")
             request.session.flash('Logged in successfully', 'success')
             return HTTPFound(location=came_from,
                              headers=headers)

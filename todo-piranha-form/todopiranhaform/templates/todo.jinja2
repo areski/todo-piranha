@@ -16,8 +16,15 @@
             <li data-id="task-{{ task.taskid }}"
                 class="{% if task.status == 'COMPLETED' %}completed{% endif %}">
                 <div class="view">
-                    <input class="toggle" type="checkbox"><label>{{ task.description }}</label>
-                    <a href="/task_delete/{{ task.taskid }}" class="destroy" onclick="task_deleted({{ task.taskid }})"></a>
+                    <!-- <input class="toggle" type="checkbox"> -->
+
+                    <label>{{ task.description }}</label>
+
+                    <a href="/task_delete/{{ task.taskid }}"
+                    class="destroy" title="Delete task '{{ task.description }}'"></a>
+
+                    <a href="/task_complete/{{ task.taskid }}"
+                    class="complete" title="Complete task '{{ task.description }}'"></a>
                 </div>
             </li>
           {% endfor %}
