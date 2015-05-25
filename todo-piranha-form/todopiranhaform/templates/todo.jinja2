@@ -1,30 +1,44 @@
 {% extends "layout.jinja2" %}
 
 {% block todocontent %}
-    <section id="todoapp">
-        <header id="header">
-            <h1>todos</h1>
-            <input id="new-todo" placeholder="What needs to be done?" autofocus>
-        </header>
-        <section id="main">
-            <input id="toggle-all" type="checkbox">
-            <label for="toggle-all">Mark all as complete</label>
-            <ul id="todo-list"></ul>
-        </section>
-        <footer id="footer">
-            <span id="todo-count"></span>
-            <ul id="filters">
-                <li>
-                    <a href="#/" class="selected">All</a>
-                </li>
-                <li>
-                    <a href="#/active">Active</a>
-                </li>
-                <li>
-                    <a href="#/completed">Completed</a>
-                </li>
-            </ul>
-            <button id="clear-completed">Clear completed</button>
-        </footer>
+<section id="todoapp">
+    <header id="header">
+        <h1>todos</h1>
+        <form action="/todo">
+            <input type="hidden" name="csrf_token" value="{{ request.session.get_csrf_token() }}">
+            <input type="hidden" name="form.submitted" value="true">
+            <input id="new-todo" placeholder="What needs to be done?" name="description" autofocus>
+        </form>
+    </header>
+    <section id="main">
+        <ul id="todo-list">
+            {% for task in tasks %}
+            <li data-id="task-{{ task.taskid }}"
+                class="{% if task.status == 'COMPLETED' %}completed{% endif %}">
+                <div class="view">
+                    <input class="toggle" type="checkbox"><label>{{ task.description }}</label>
+                    <a href="/task_delete/{{ task.taskid }}" class="destroy" onclick="task_deleted({{ task.taskid }})"></a>
+                </div>
+            </li>
+          {% endfor %}
+        </ul>
+    </section>
+    <footer id="footer">
+        <span id="todo-count">
+            <strong>{{ items_left }}</strong> items left
+        </span>
+        <ul id="filters">
+            <li>
+                <a href="/todo/all" {% if viewtype == 'ALL' %}class="selected"{% endif %}>All</a>
+            </li>
+            <li>
+                <a href="/todo/active" {% if viewtype == 'ACTIVE' %}class="selected"{% endif %}>Active</a>
+            </li>
+            <li>
+                <a href="/todo/completed" {% if viewtype == 'completed' %}class="selected"{% endif %}>Completed</a>
+            </li>
+        </ul>
+        <a id="clear-completed" href="/clear_completed">Clear completed</a>
+    </footer>
     </section>
 {% endblock %}

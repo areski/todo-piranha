@@ -13,6 +13,7 @@ from deform import ValidationFailure
 
 import deform
 import colander
+import datetime
 
 from .usersdb import USERS
 
@@ -25,9 +26,51 @@ from .models import (
 
 conn_err_msg = "Pyramid is having a problem using your SQL database."
 
+_TASKS = {}
+_TASKS['default'] = [
+    {
+        "taskid": "1",
+        "status": "COMPLETED",
+        "description": "Learn 101 of telekinesis",
+        "created": datetime.datetime.now().isoformat()
+    },
+    {
+        "taskid": "2",
+        "status": "ACTIVE",
+        "description": "Bend 20 forks",
+        "created": datetime.datetime.now().isoformat()
+    },
+    {
+        "taskid": "3",
+        "status": "ACTIVE",
+        "description": "Become master in levitation",
+        "created": datetime.datetime.now().isoformat()
+    },
+    {
+        "taskid": "4",
+        "status": "ACTIVE",
+        "description": "Go home flying",
+        "created": datetime.datetime.now().isoformat()
+    },
+]
 
-def succeed():
-    return Response('<div id="thanks">Thanks!</div>')
+
+def complete_task_only():
+    # filter list
+    _TASKS['default'] = [task for task in _TASKS['default'] if task['status'] == 'ACTIVE']
+
+
+def delete_task(taskid):
+    # delete task with taskid
+    _TASKS['default'] = [task for task in _TASKS['default'] if task['taskid'] != taskid]
+
+
+def count_items_left():
+    count = 0
+    for task in _TASKS['default']:
+        if task['status'] == 'ACTIVE':
+            count = count + 1
+    return count
 
 
 @view_config(route_name='home', renderer='templates/mytemplate.pt')
@@ -41,12 +84,6 @@ def my_view(request):
 
 @view_config(route_name='testjson', renderer='json')
 def testjson(request):
-    return {'val': 1}
-
-
-@view_config(route_name='viewtodo', renderer='templates/todo.jinja2',
-             permission='view')
-def viewtodo(request):
     return {'val': 1}
 
 
@@ -70,6 +107,71 @@ def viewform(request):
         'form': html,
         'appstruct': appstruct,
         }
+
+
+@view_config(route_name='todofiltered', renderer='templates/todo.jinja2',
+             permission='view')
+def todofiltered(request):
+    viewtype = "ALL"
+    if request.matchdict['viewtype']:
+        viewtype = request.matchdict['viewtype']
+    viewtype = viewtype.upper()
+
+    return viewtodo(request, viewtype)
+
+
+def filter_tasks(viewtype):
+    if viewtype == 'ACTIVE' or viewtype == 'COMPLETED':
+        return [task for task in _TASKS['default'] if task['status'] == viewtype]
+    else:
+        # Return all tasks
+        return _TASKS['default']
+
+
+@view_config(route_name='viewtodo', renderer='templates/todo.jinja2',
+             permission='view')
+def viewtodo(request, viewtype='ALL'):
+    message = ''
+    if 'form.submitted' in request.params:
+        # Require CSRF Token
+        check_csrf_token(request)
+        description = request.params['description']
+        if len(description) > 0:
+            request.session.flash('Task added successfully', 'success')
+            _TASKS['default'].append({
+                "taskid": len(_TASKS['default']),
+                "status": "ACTIVE",
+                "description": description,
+                "created": datetime.datetime.now().isoformat()
+            })
+        else:
+            request.session.flash("Please enter a task description", 'error')
+
+    tasks = filter_tasks(viewtype)
+    items_left = count_items_left()
+    return dict(
+        message=message,
+        tasks=tasks,
+        viewtype=viewtype,
+        items_left=items_left,
+        )
+
+
+@view_config(route_name='clear_completed')
+def clear_completed(request):
+    complete_task_only()
+    url = request.route_url('viewtodo')
+    return HTTPFound(location=url)
+
+
+@view_config(route_name='task_delete')
+def task_delete(request):
+    if request.matchdict['taskid']:
+        taskid = request.matchdict['taskid']
+        delete_task(taskid)
+        request.session.flash("Task deleted!", 'error')
+    url = request.route_url('viewtodo')
+    return HTTPFound(location=url)
 
 
 @view_config(renderer="templates/login.jinja2", context=HTTPForbidden)
