@@ -1,6 +1,8 @@
 import unittest
 import transaction
 
+from pyramid.paster import get_app
+
 from pyramid import testing
 
 from .models import DBSession
@@ -40,10 +42,54 @@ class TutorialViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_todofiltered(self):
-        from .views import viewtodo
+    # def test_todofiltered(self):
+    #     from .views import viewtodo
 
+    #     request = testing.DummyRequest()
+    #     request.matchdict = {'viewtype': 'COMPLETED'}
+    #     response = viewtodo(request)
+    #     self.assertEqual(response.status_code, 200)
+
+    def test_todo_json(self):
+        from .views import todo_json
         request = testing.DummyRequest()
-        request.matchdict = {'viewtype': 'COMPLETED'}
-        response = viewtodo(request)
-        self.assertEqual(response.status_code, 200)
+        response = todo_json(request)
+        self.assertEqual(len(response), 4)
+
+
+class TutorialAuthentication(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
+    # def test_view_todo(self):
+    #     from .views import viewtodo
+    #     request = testing.DummyRequest()
+    #     response = viewtodo(request)
+    #     self.assertEqual(len(response), 4)
+
+    # def test_view_todo_forbidden(self):
+    #     from pyramid.httpexceptions import HTTPForbidden
+    #     from .views import viewtodo
+    #     self.config.testing_securitypolicy(userid='pirate',
+    #                                        permissive=False)
+    #     request = testing.DummyRequest()
+    #     request.context = testing.DummyResource()
+    #     self.assertRaises(HTTPForbidden, viewtodo, request)
+
+
+class FunctionalTests(unittest.TestCase):
+    def setUp(self):
+        # from todopiranhaform import main
+        # app = main({}, **settings)
+        from webtest import TestApp
+        app = get_app('development.ini')
+        self.testapp = TestApp(app)
+
+    def test_root(self):
+        resp = self.testapp.get('/login', status=200)
+        # import ipdb; ipdb.set_trace()
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn(b'Enter your username"', resp.body)
