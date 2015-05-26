@@ -12,7 +12,7 @@
 
             <p><em>{{ message }}</em></p>
 
-            <form action="/login">
+            <form action="/login" id="loginform">
                 <input type="hidden" name="csrf_token" value="{{ request.session.get_csrf_token() }}">
                 <input type="hidden" name="came_from" value="{{ came_from }}"/>
                 <input name="login" class="edit login" placeholder="Enter your username" autofocus>
