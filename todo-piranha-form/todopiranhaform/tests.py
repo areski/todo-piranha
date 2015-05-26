@@ -11,13 +11,13 @@ def _initTestingDB():
     from .models import (
         DBSession,
         Base,
-        TaskModel,
+        Task,
         )
     engine = create_engine('sqlite://')
     Base.metadata.create_all(engine)
     DBSession.configure(bind=engine)
     with transaction.manager:
-        model = TaskModel(taskname='mytask-test', status=True)
+        model = Task(taskname='mytask-test', status=True)
         DBSession.add(model)
     return DBSession
 
@@ -41,6 +41,7 @@ class TodoViewTests(unittest.TestCase):
     def test_todofiltered_view(self):
         from .views import todofiltered
         request = testing.DummyRequest()
+        # import ipdb; ipdb.set_trace()
         request.matchdict = {'viewtype': 'COMPLETED'}
         response = todofiltered(request)
         self.assertEqual(response['items_left'], 3)

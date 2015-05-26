@@ -3,7 +3,7 @@ from pyramid.view import forbidden_view_config
 from pyramid.session import check_csrf_token
 from pyramid.security import remember
 from pyramid.security import forget
-# from .forms import task_form
+from .forms import TaskForm, LoginForm
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPForbidden
@@ -19,7 +19,7 @@ from sqlalchemy.exc import DBAPIError
 
 from .models import (
     DBSession,
-    TaskModel,
+    Task,
     )
 
 conn_err_msg = "Pyramid is having a problem using your SQL database."
@@ -92,10 +92,8 @@ def todo_json(request):
 def todofiltered(request):
     viewtype = "ALL"
     if request.matchdict['viewtype']:
-        viewtype = request.matchdict['viewtype']
-    viewtype = viewtype.upper()
-
-    return viewtodo(request, viewtype)
+        viewtype = request.matchdict['viewtype'].upper()
+    return todo_get(request, viewtype)
 
 
 def filter_tasks(viewtype):
@@ -106,33 +104,48 @@ def filter_tasks(viewtype):
         return _TASKS['default']
 
 
-@view_config(route_name='viewtodo', renderer='templates/todo.jinja2',
-             permission='view')
-def viewtodo(request, viewtype='ALL'):
-    message = ''
-    if 'form.submitted' in request.params:
-        # Require CSRF Token
-        check_csrf_token(request)
-        description = request.params['description']
-        if len(description) > 0:
-            request.session.flash('Task added successfully', 'success')
-            _TASKS['default'].append({
-                "taskid": len(_TASKS['default']),
-                "status": "ACTIVE",
-                "description": description,
-                "created": datetime.datetime.now().isoformat()
-            })
-        else:
-            request.session.flash("Please enter a task description", 'error')
-
+@view_config(route_name='viewtodo', request_method="GET",
+             renderer='templates/todo.jinja2', permission='view')
+def todo_get(request, viewtype='ALL'):
+    task = Task()
+    form = TaskForm(obj=request.POST)
+    if request.method == 'POST' and form.validate():
+        form.populate_obj(task)
+        DBSession.add(task)
+        request.session.flash('Task added successfully', 'success')
+        _TASKS['default'].append({
+            "taskid": len(_TASKS['default']),
+            "status": "ACTIVE",
+            "description": form.taskname.data,
+            "created": datetime.datetime.now().isoformat()
+        })
     tasks = filter_tasks(viewtype)
     items_left = count_items_left()
     return dict(
-        message=message,
+        form=form,
         tasks=tasks,
         viewtype=viewtype,
         items_left=items_left,
         )
+
+
+@view_config(route_name='viewtodo', request_method="POST",
+             renderer='templates/todo.jinja2', permission='view')
+def todo_post(request):
+    form = TaskForm(request.POST)
+    if request.method == 'POST' and form.validate():
+        task = Task()
+        form.populate_obj(task)
+        DBSession.add(task)
+        request.session.flash('Task added successfully', 'success')
+        _TASKS['default'].append({
+            "taskid": len(_TASKS['default']),
+            "status": "ACTIVE",
+            "description": form.taskname.data,
+            "created": datetime.datetime.now().isoformat()
+        })
+    url = request.route_url('viewtodo')
+    return HTTPFound(location=url)
 
 
 @view_config(route_name='clear_completed')
@@ -162,10 +175,8 @@ def task_complete(request):
     return HTTPFound(location=url)
 
 
-@view_config(renderer="templates/login.jinja2", context=HTTPForbidden)
 @view_config(route_name='login', renderer='templates/login.jinja2')
 def login(request):
-    # login_url = request.resource_url(self.context, 'login')
     login_url = request.route_url('login')
     referrer = request.url
     if referrer == login_url:
@@ -175,20 +186,23 @@ def login(request):
     message = ''
     login = ''
     password = ''
-    if 'form.submitted' in request.params:
+    # import ipdb; ipdb.set_trace()
+
+    form = LoginForm(request.POST)
+    if request.method == 'POST' and form.validate():
         # Require CSRF Token
         check_csrf_token(request)
-        login = request.params['login']
-        password = request.params['password']
+        login = form.login.data
+        password = form.password.data
         if USERS.get(login) == password:
             headers = remember(request, login)
             request.session.flash('Logged in successfully', 'success')
             return HTTPFound(location=came_from,
                              headers=headers)
-        message = 'Failed login'
-    request.session.flash(message, 'error')
+        request.session.flash('Failed login', 'error')
 
     return dict(
+        form=form,
         page_title="Login",
         message=message,
         url=request.application_url + '/login',
@@ -216,7 +230,7 @@ def homeview(request):
 # @view_config(route_name='home', renderer='templates/mytemplate.pt')
 # def my_view(request):
 #     try:
-#         one = DBSession.query(TaskModel).filter(TaskModel.taskname == 'one').first()
+#         one = DBSession.query(Task).filter(Task.taskname == 'one').first()
 #     except DBAPIError:
 #         return Response(conn_err_msg, content_type='text/plain', status_int=500)
 #     return {'one': one, 'project': 'todo-piranha-form'}

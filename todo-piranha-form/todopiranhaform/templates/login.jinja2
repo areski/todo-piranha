@@ -12,14 +12,23 @@
 
             <p><em>{{ message }}</em></p>
 
-            <form action="/login" id="loginform">
+            <form action="{{request.route_url('login')}}" method="post" class="form">
                 <input type="hidden" name="csrf_token" value="{{ request.session.get_csrf_token() }}">
                 <input type="hidden" name="came_from" value="{{ came_from }}"/>
-                <input name="login" class="edit login" placeholder="Enter your username" autofocus>
-                <input type="password" name="password" class="edit login" placeholder="Enter your password">
+
+                {{form.login(class_='edit login', placeholder="Enter your username", autofocus=true)}}
+                {% for error in form.login.errors %}
+                    <div class="error">{{ error }}</div>
+                {% endfor %}
+
+                {{form.password(class_='edit login', placeholder="Enter your password")}}
+                {% for error in form.password.errors %}
+                    <div class="error">{{ error }}</div>
+                {% endfor %}
 
                 <input type="submit" name="form.submitted" value="Log In" class="btn"/>
             </form>
+
         </div>
     </section>
 
