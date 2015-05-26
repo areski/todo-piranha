@@ -25,6 +25,11 @@ The following packages will be used:
 * WTForms-Alchemy
 
 
+![todo login](https://github.com/areski/todo-piranha/raw/master/images/todo-login.png "Todo Login")
+
+![todo view](https://github.com/areski/todo-piranha/raw/master/images/todo-view.png "Todo View")
+
+
 ## Install with Python 2.7
 
 You can follow the instructions in the [Pyramid docs on installation][install].
