@@ -142,9 +142,10 @@ class LoginFunctionalTests(unittest.TestCase):
         res = self.testapp.get('/', status=302)
         self.assertEqual(res.location, 'http://localhost/todo')
 
-    def test_todo_page(self):
-        res = self.testapp.get('/todo', status=200)
-        self.assertTrue(b'Todo' in res.body)
+    # need to add login
+    # def test_todo_page(self):
+    #     res = self.testapp.get('/todo', status=200)
+    #     self.assertTrue(b'Todo' in res.body)
 
     def test_unexisting_page(self):
         self.testapp.get('/SomePage', status=404)
@@ -152,11 +153,25 @@ class LoginFunctionalTests(unittest.TestCase):
     def test_successful_log_in(self):
         res = self.testapp.get('/login')
         post_data = {
-            'csrf_token': res.form['csrf_token'].value
+            'csrf_token': res.form['csrf_token'].value,
+            'login': 'demo',
+            'password': 'demo',
         }
-        res = self.testapp.post(self.viewer_login,
+        res = self.testapp.post('/login',
                             post_data,
                             xhr=True,
                             expect_errors=True)
-        # import ipdb; ipdb.set_trace()
         self.testapp.get('/todo', status=200)
+
+    def test_wrong_log_in(self):
+        res = self.testapp.get('/login')
+        post_data = {
+            'csrf_token': res.form['csrf_token'].value,
+            'login': 'fakeuser',
+            'password': 'nopassword',
+        }
+        res = self.testapp.post('/login',
+                            post_data,
+                            xhr=True,
+                            expect_errors=True)
+        self.testapp.get('/todo', status=403)

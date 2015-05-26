@@ -10,8 +10,6 @@
         <div id="formlogin">
             <p>Please enter your username and password (demo / demo) <br/></p>
 
-            <p><em>{{ message }}</em></p>
-
             <form action="{{request.route_url('login')}}" method="post" class="form">
                 <input type="hidden" name="csrf_token" value="{{ request.session.get_csrf_token() }}">
                 <input type="hidden" name="came_from" value="{{ came_from }}"/>

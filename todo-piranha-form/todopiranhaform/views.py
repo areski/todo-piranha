@@ -175,19 +175,33 @@ def task_complete(request):
     return HTTPFound(location=url)
 
 
-@view_config(route_name='login', renderer='templates/login.jinja2')
-def login(request):
+def get_login_came_from(request):
     login_url = request.route_url('login')
     referrer = request.url
     if referrer == login_url:
         # never use the login form itself as came_from
         referrer = '/todo'
     came_from = request.params.get('came_from', referrer)
-    message = ''
+    return came_from
+
+
+@view_config(route_name='login', renderer='templates/login.jinja2',
+             request_method="GET")
+def login_get(request):
+    came_from = get_login_came_from(request)
+    form = LoginForm(request.POST)
+    return dict(
+        form=form,
+        came_from=came_from,
+        )
+
+
+@view_config(route_name='login', renderer='templates/login.jinja2',
+             request_method="POST")
+def login_post(request):
+    came_from = get_login_came_from(request)
     login = ''
     password = ''
-    # import ipdb; ipdb.set_trace()
-
     form = LoginForm(request.POST)
     if request.method == 'POST' and form.validate():
         # Require CSRF Token
@@ -203,12 +217,7 @@ def login(request):
 
     return dict(
         form=form,
-        page_title="Login",
-        message=message,
-        url=request.application_url + '/login',
         came_from=came_from,
-        login=login,
-        password=password,
         )
 
 
