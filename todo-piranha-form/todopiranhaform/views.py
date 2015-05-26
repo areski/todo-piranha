@@ -24,67 +24,40 @@ from .models import (
 
 conn_err_msg = "Pyramid is having a problem using your SQL database."
 
-_TASKS = {}
-_TASKS['default'] = [
-    {
-        "taskid": "1",
-        "status": "COMPLETED",
-        "description": "Learn 101 of telekinesis",
-        "created": datetime.datetime.now().isoformat()
-    },
-    {
-        "taskid": "2",
-        "status": "ACTIVE",
-        "description": "Bend 20 forks",
-        "created": datetime.datetime.now().isoformat()
-    },
-    {
-        "taskid": "3",
-        "status": "ACTIVE",
-        "description": "Become master in levitation",
-        "created": datetime.datetime.now().isoformat()
-    },
-    {
-        "taskid": "4",
-        "status": "ACTIVE",
-        "description": "Go home flying",
-        "created": datetime.datetime.now().isoformat()
-    },
-]
 
-
-def get_complete_task():
+def get_tasks(status):
     # filter list
-    return [task for task in _TASKS['default'] if task['status'] == 'ACTIVE']
+    tasks = DBSession.query(Task).filter_by(status=status).all()
+    return tasks
+
+
+def get_all_tasks():
+    # filter list
+    tasks = DBSession.query(Task).all()
+    return tasks
 
 
 def complete_task(taskid):
     # complete task
-    ntasklist = []
-    for task in _TASKS['default']:
-        if task['taskid'] == taskid:
-            task['status'] = "COMPLETED"
-        ntasklist.append(task)
-    return ntasklist
+    task = DBSession.query(Task).filter_by(id=taskid).one()
+    task.status = False
 
 
 def delete_task(taskid):
     # delete task with taskid
-    _TASKS['default'] = [task for task in _TASKS['default'] if task['taskid'] != taskid]
+    task = DBSession.query(Task).filter_by(id=taskid).one()
+    DBSession.delete(task)
 
 
 def count_items_left():
-    count = 0
-    for task in _TASKS['default']:
-        if task['status'] == 'ACTIVE':
-            count = count + 1
+    count = DBSession.query(Task).filter_by(status=True).count()
     return count
 
 
 @view_config(route_name='todo_json', renderer='json',
              permission='view')
 def todo_json(request):
-    return _TASKS['default']
+    return get_all_tasks()
 
 
 @view_config(route_name='todofiltered', renderer='templates/todo.jinja2',
@@ -97,28 +70,18 @@ def todofiltered(request):
 
 
 def filter_tasks(viewtype):
-    if viewtype == 'ACTIVE' or viewtype == 'COMPLETED':
-        return [task for task in _TASKS['default'] if task['status'] == viewtype]
+    if viewtype == 'ACTIVE':
+        return get_tasks(True)
+    elif viewtype == 'COMPLETED':
+        return get_tasks(False)
     else:
-        # Return all tasks
-        return _TASKS['default']
+        return get_all_tasks()
 
 
 @view_config(route_name='viewtodo', request_method="GET",
              renderer='templates/todo.jinja2', permission='view')
 def todo_get(request, viewtype='ALL'):
-    task = Task()
-    form = TaskForm(obj=request.POST)
-    if request.method == 'POST' and form.validate():
-        form.populate_obj(task)
-        DBSession.add(task)
-        request.session.flash('Task added successfully', 'success')
-        _TASKS['default'].append({
-            "taskid": len(_TASKS['default']),
-            "status": "ACTIVE",
-            "description": form.taskname.data,
-            "created": datetime.datetime.now().isoformat()
-        })
+    form = TaskForm()
     tasks = filter_tasks(viewtype)
     items_left = count_items_left()
     return dict(
@@ -134,23 +97,18 @@ def todo_get(request, viewtype='ALL'):
 def todo_post(request):
     form = TaskForm(request.POST)
     if request.method == 'POST' and form.validate():
-        task = Task()
+        task = Task(taskname=form.taskname.data, status=True)
         form.populate_obj(task)
         DBSession.add(task)
         request.session.flash('Task added successfully', 'success')
-        _TASKS['default'].append({
-            "taskid": len(_TASKS['default']),
-            "status": "ACTIVE",
-            "description": form.taskname.data,
-            "created": datetime.datetime.now().isoformat()
-        })
     url = request.route_url('viewtodo')
     return HTTPFound(location=url)
 
 
 @view_config(route_name='clear_completed')
 def clear_completed(request):
-    _TASKS['default'] = get_complete_task()
+    # ???
+    # _TASKS['default'] = get_tasks(False)
     url = request.route_url('viewtodo')
     return HTTPFound(location=url)
 
@@ -214,7 +172,6 @@ def login_post(request):
             return HTTPFound(location=came_from,
                              headers=headers)
         request.session.flash('Failed login', 'error')
-
     return dict(
         form=form,
         came_from=came_from,
@@ -234,15 +191,6 @@ def logout(request):
 def homeview(request):
     url = request.route_url('viewtodo')
     return HTTPFound(location=url)
-
-
-# @view_config(route_name='home', renderer='templates/mytemplate.pt')
-# def my_view(request):
-#     try:
-#         one = DBSession.query(Task).filter(Task.taskname == 'one').first()
-#     except DBAPIError:
-#         return Response(conn_err_msg, content_type='text/plain', status_int=500)
-#     return {'one': one, 'project': 'todo-piranha-form'}
 
 
 # @forbidden_view_config(renderer='templates/login.jinja2')

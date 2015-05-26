@@ -17,18 +17,18 @@
     <section id="main">
         <ul id="todo-list">
             {% for task in tasks %}
-            <li data-id="task-{{ task.taskid }}"
-                class="{% if task.status == 'COMPLETED' %}completed{% endif %}">
+            <li data-id="task-{{ task.id }}"
+                class="{% if task.status == false %}completed{% endif %}">
                 <div class="view">
                     <!-- <input class="toggle" type="checkbox"> -->
 
-                    <label>{{ task.description }}</label>
+                    <label>{{ task.taskname }}</label>
 
-                    <a href="/task_delete/{{ task.taskid }}"
-                    class="destroy" title="Delete task '{{ task.description }}'"></a>
+                    <a href="/task_delete/{{ task.id }}"
+                    class="destroy" title="Delete task '{{ task.taskname }}'"></a>
 
-                    <a href="/task_complete/{{ task.taskid }}"
-                    class="complete" title="Complete task '{{ task.description }}'"></a>
+                    <a href="/task_complete/{{ task.id }}"
+                    class="complete" title="Complete task '{{ task.taskname }}'"></a>
                 </div>
             </li>
           {% endfor %}

@@ -37,9 +37,17 @@ def main(argv=sys.argv):
     DBSession.configure(bind=engine)
     Base.metadata.create_all(engine)
     with transaction.manager:
-        model = Task(name='mytask', status=False)
+        model = Task(taskname='Learn 101 of telekinesis', status=False)
+        DBSession.add(model)
+        model = Task(taskname='Bend 20 forks', status=True)
+        DBSession.add(model)
+        model = Task(taskname='Become master in levitation', status=True)
+        DBSession.add(model)
+        model = Task(taskname='Go home flying', status=True)
         DBSession.add(model)
 
     with transaction.manager:
         admin = User(name=u'admin', password=u'admin')
+        DBSession.add(admin)
+        admin = User(name=u'demo', password=u'demo')
         DBSession.add(admin)

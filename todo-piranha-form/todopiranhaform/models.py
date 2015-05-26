@@ -5,7 +5,6 @@ from sqlalchemy import (
     Boolean,
     Text,
     Unicode,      # <- will provide unicode field,
-    # UnicodeText,  # <- will provide unicode text field,
     DateTime      # <- time abstraction field,
     )
 from sqlalchemy.ext.declarative import declarative_base
@@ -26,8 +25,7 @@ class Task(Base):
     __tablename__ = 'tasks'
     id = Column(Integer, primary_key=True)
     taskname = Column(Text)
-    # status: True=Active, False=Completed
-    status = Column(Boolean)
+    status = Column(Boolean)  # True=Active, False=Completed
     created = Column(DateTime, default=datetime.datetime.utcnow)
     edited = Column(DateTime, default=datetime.datetime.utcnow)
 

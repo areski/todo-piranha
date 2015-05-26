@@ -1,14 +1,5 @@
-from deform import Form
-from .schemas import task_schema
-
-
-task_form = Form(task_schema, buttons=('submit',))
-
-# --
-
-
 from wtforms import Form, BooleanField, StringField, validators
-from wtforms import HiddenField
+# from wtforms import HiddenField
 from wtforms import PasswordField
 
 
