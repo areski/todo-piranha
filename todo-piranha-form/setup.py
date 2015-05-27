@@ -10,15 +10,12 @@ with open(os.path.join(here, 'CHANGES.txt')) as f:
 
 requires = [
     'pyramid',
-    'pyramid_chameleon',
     'pyramid_debugtoolbar',
     'pyramid_tm',
     'SQLAlchemy',
     'transaction',
     'zope.sqlalchemy',
     'waitress',
-    'deform_bootstrap==0.2.8',
-    'deform_bootstrap_extra',
     'pyramid_jinja2'
     ]
 

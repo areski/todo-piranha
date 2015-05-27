@@ -18,14 +18,10 @@ Pyramid.
 The following packages will be used:
 
 * Pyramid
-* Deform
 * SQLalchemy
+* WTForms
 * Jinja2
-* Colander
 * WebOb
-* Cornice
-* Authentication with Twitter - https://github.com/cd34/apex
-* WTForms-Alchemy
 
 
 ![todo login](https://github.com/areski/todo-piranha/raw/master/images/todo-login.png "Todo Login")
@@ -115,8 +111,11 @@ send pull request.
 
 [install]: http://pyramid.readthedocs.org/en/latest/narr/install.html
 [sphinx-doc]: http://sphinx-doc.org/
-[deform]: http://docs.pylonsproject.org/projects/deform/en/latest/
-[deform_bootstrap]: http://pypi.python.org/pypi/deform_bootstrap
 [customux]: http://docs.pylonsproject.org/projects/pyramid_tutorials/en/latest/humans/creatingux/step05/index.html
 [notfound]: http://docs.pylonsproject.org/projects/pyramid/en/latest/api/view.html#pyramid.view.notfound_view_config
 [sqlalchemy]: http://www.sqlalchemy.org/
+
+
+## TODO
+
+* Authentication with Twitter - https://github.com/cd34/apex

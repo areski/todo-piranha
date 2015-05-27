@@ -7,10 +7,6 @@ from .forms import TaskForm, LoginForm
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid.httpexceptions import HTTPForbidden
-# import deform
-# from deform import ValidationFailure
-# import colander
-# from pyramid.response import Response
 import datetime
 
 from .usersdb import USERS
