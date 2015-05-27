@@ -3,6 +3,8 @@
 
 This is a simple Todo Pyramind application.
 
+[![](https://travis-ci.org/areski/todo-piranha.svg)](https://travis-ci.org/areski/todo-piranha)
+
 We will have 2 versions one using Forms and Views and an other one built with
 ReactJS:
 
@@ -92,6 +94,17 @@ It can now be started up by doing the following.
 ```
 
 Now go to <http://localhost:6543> and enjoy!
+
+## Run Tests
+
+You can run tests with:
+```
+$VENV/bin/nosetests todopiranhaform -v
+```
+or
+```
+python setup.py test
+```
 
 ## Contribute
 

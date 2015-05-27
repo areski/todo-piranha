@@ -28,14 +28,26 @@ def _initTestingDB():
     return DBSession
 
 
+# class DBSessionTests(unittest.TestCase):
+#     @classmethod
+#     def setUpClass(cls):
+#         cls.session = _initTestingDB()
+#         cls.config = testing.setUp()
+
+#     @classmethod
+#     def tearDownClass(cls):
+#         cls.session.remove()
+#         testing.tearDown()
+
+
 class TodoViewTests(unittest.TestCase):
     def setUp(self):
         self.session = _initTestingDB()
-        self.config = testing.setUp()
+        # self.config = testing.setUp()
 
     def tearDown(self):
         self.session.remove()
-        testing.tearDown()
+        # testing.tearDown()
 
     def test_passing_view(self):
         from .views import todo_json
@@ -66,9 +78,11 @@ class TodoViewTests(unittest.TestCase):
 
 class TutorialViewTests(unittest.TestCase):
     def setUp(self):
+        self.session = _initTestingDB()
         self.config = testing.setUp()
 
     def tearDown(self):
+        self.session.remove()
         testing.tearDown()
 
     def test_todofiltered(self):
@@ -86,12 +100,12 @@ class TutorialViewTests(unittest.TestCase):
         self.assertEqual(len(response), 4)
 
 
-class TutorialAuthentication(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
+# class TutorialAuthentication(unittest.TestCase):
+#     def setUp(self):
+#         self.config = testing.setUp()
 
-    def tearDown(self):
-        testing.tearDown()
+#     def tearDown(self):
+#         testing.tearDown()
 
     # def test_view_todo(self):
     #     from .views import viewtodo
@@ -127,17 +141,19 @@ class FunctionalTests(unittest.TestCase):
 class LoginFunctionalTests(unittest.TestCase):
 
     def setUp(self):
-        self.session = _initTestingDB()
-        self.config = testing.setUp()
-
+        # import ipdb; ipdb.set_trace()
         from webtest import TestApp
         app = get_app('development.ini')
         self.testapp = TestApp(app)
+        from .models import (
+            DBSession
+        )
+        self.session = DBSession
 
     def tearDown(self):
         del self.testapp
-        # from .models import DBSession
         self.session.remove()
+        testing.tearDown()
 
     def test_root(self):
         res = self.testapp.get('/', status=302)
@@ -152,6 +168,7 @@ class LoginFunctionalTests(unittest.TestCase):
         self.testapp.get('/SomePage', status=404)
 
     def test_successful_log_in(self):
+        # import ipdb; ipdb.set_trace()
         res = self.testapp.get('/login')
         post_data = {
             'csrf_token': res.form['csrf_token'].value,
