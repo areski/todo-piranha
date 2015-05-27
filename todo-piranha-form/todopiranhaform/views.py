@@ -54,6 +54,25 @@ def count_items_left():
     return count
 
 
+def filter_tasks(viewtype):
+    if viewtype == 'ACTIVE':
+        return get_tasks(True)
+    elif viewtype == 'COMPLETED':
+        return get_tasks(False)
+    else:
+        return get_all_tasks()
+
+
+def get_login_came_from(request):
+    login_url = request.route_url('login')
+    referrer = request.url
+    if referrer == login_url:
+        # never use the login form itself as came_from
+        referrer = '/todo'
+    came_from = request.params.get('came_from', referrer)
+    return came_from
+
+
 @view_config(route_name='todo_json', renderer='json',
              permission='view')
 def todo_json(request):
@@ -67,15 +86,6 @@ def todofiltered(request):
     if request.matchdict['viewtype']:
         viewtype = request.matchdict['viewtype'].upper()
     return todo_get(request, viewtype)
-
-
-def filter_tasks(viewtype):
-    if viewtype == 'ACTIVE':
-        return get_tasks(True)
-    elif viewtype == 'COMPLETED':
-        return get_tasks(False)
-    else:
-        return get_all_tasks()
 
 
 @view_config(route_name='viewtodo', request_method="GET",
@@ -131,16 +141,6 @@ def task_complete(request):
         request.session.flash("Task completed!", 'success')
     url = request.route_url('viewtodo')
     return HTTPFound(location=url)
-
-
-def get_login_came_from(request):
-    login_url = request.route_url('login')
-    referrer = request.url
-    if referrer == login_url:
-        # never use the login form itself as came_from
-        referrer = '/todo'
-    came_from = request.params.get('came_from', referrer)
-    return came_from
 
 
 @view_config(route_name='login', renderer='templates/login.jinja2',
