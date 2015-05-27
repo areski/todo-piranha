@@ -1,9 +1,11 @@
 import unittest
 import transaction
-
 from pyramid.paster import get_app
-
 from pyramid import testing
+import os.path
+
+
+here = os.path.dirname(__file__)
 
 
 def _initTestingDB():
@@ -128,7 +130,7 @@ class FunctionalTests(unittest.TestCase):
         # from todopiranhaform import main
         # app = main({}, **settings)
         from webtest import TestApp
-        app = get_app('development.ini')
+        app = get_app(os.path.join(here, '../development.ini'))
         self.testapp = TestApp(app)
 
     def test_root(self):
@@ -143,7 +145,7 @@ class LoginFunctionalTests(unittest.TestCase):
     def setUp(self):
         # import ipdb; ipdb.set_trace()
         from webtest import TestApp
-        app = get_app('development.ini')
+        app = get_app(os.path.join(here, '../development.ini'))
         self.testapp = TestApp(app)
         from .models import (
             DBSession
