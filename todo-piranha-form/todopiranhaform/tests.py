@@ -17,7 +17,13 @@ def _initTestingDB():
     Base.metadata.create_all(engine)
     DBSession.configure(bind=engine)
     with transaction.manager:
-        model = Task(taskname='mytask-test', status=True)
+        model = Task(taskname='Learn 101 of telekinesis', status=False)
+        DBSession.add(model)
+        model = Task(taskname='Bend 20 forks', status=True)
+        DBSession.add(model)
+        model = Task(taskname='Become master in levitation', status=True)
+        DBSession.add(model)
+        model = Task(taskname='Go home flying', status=True)
         DBSession.add(model)
     return DBSession
 
@@ -35,8 +41,10 @@ class TodoViewTests(unittest.TestCase):
         from .views import todo_json
         request = testing.DummyRequest()
         tasklist = todo_json(request)
-        self.assertEqual(tasklist[0]['taskid'], '1')
-        self.assertEqual(tasklist[0]['description'], 'Learn 101 of telekinesis')
+        # import ipdb; ipdb.set_trace()
+        # print(tasklist)
+        self.assertEqual(tasklist[0].id, 1)
+        self.assertEqual(tasklist[0].taskname, 'Learn 101 of telekinesis')
 
     def test_todofiltered_view(self):
         from .views import todofiltered
@@ -63,13 +71,13 @@ class TutorialViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    # def test_todofiltered(self):
-    #     from .views import viewtodo
+    def test_todofiltered(self):
+        from .views import todo_get
 
-    #     request = testing.DummyRequest()
-    #     request.matchdict = {'viewtype': 'COMPLETED'}
-    #     response = viewtodo(request)
-    #     self.assertEqual(response.status_code, 200)
+        request = testing.DummyRequest()
+        request.matchdict = {'viewtype': 'COMPLETED'}
+        response = todo_get(request)
+        self.assertEqual(response['items_left'], 3)
 
     def test_todo_json(self):
         from .views import todo_json
@@ -116,27 +124,20 @@ class FunctionalTests(unittest.TestCase):
         self.assertIn(b'Enter your username"', resp.body)
 
 
-# --
-
 class LoginFunctionalTests(unittest.TestCase):
 
-    viewer_login = '/login?login=demo&password=demo' \
-                   '&form.submitted=Login'
-    viewer_wrong_login = '/login?login=demo&password=incorrect' \
-                         '&form.submitted=Login'
-
     def setUp(self):
-        from todopiranhaform import main
-        settings = {'sqlalchemy.url': 'sqlite://'}
-        app = main({}, **settings)
+        self.session = _initTestingDB()
+        self.config = testing.setUp()
+
         from webtest import TestApp
+        app = get_app('development.ini')
         self.testapp = TestApp(app)
-        # _initTestingDB()
 
     def tearDown(self):
         del self.testapp
-        from .models import DBSession
-        DBSession.remove()
+        # from .models import DBSession
+        self.session.remove()
 
     def test_root(self):
         res = self.testapp.get('/', status=302)
