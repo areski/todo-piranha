@@ -18,6 +18,7 @@ requires = [
     'waitress',
     'pyramid_jinja2',
     'WTForms',
+    'WebTest'
     ]
 
 setup(name='todo-piranha-form',
