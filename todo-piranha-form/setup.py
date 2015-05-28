@@ -16,7 +16,8 @@ requires = [
     'transaction',
     'zope.sqlalchemy',
     'waitress',
-    'pyramid_jinja2'
+    'pyramid_jinja2',
+    'WTForms'
     ]
 
 setup(name='todo-piranha-form',
