@@ -143,20 +143,16 @@ class FunctionalTests(unittest.TestCase):
 class LoginFunctionalTests(unittest.TestCase):
 
     def setUp(self):
-        # import ipdb; ipdb.set_trace()
-        from webtest import TestApp
+        self.session = _initTestingDB()
+        self.config = testing.setUp()
+        from pyramid.paster import get_app
         app = get_app(os.path.join(here, '../development.ini'))
+        from webtest import TestApp
         self.testapp = TestApp(app)
-        from .models import (
-            DBSession
-        )
-        self.session = DBSession
 
     def tearDown(self):
-        del self.testapp
         self.session.remove()
         testing.tearDown()
-
     def test_root(self):
         res = self.testapp.get('/', status=302)
         self.assertEqual(res.location, 'http://localhost/todo')
